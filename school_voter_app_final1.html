@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+  <meta charset="UTF-8">
+  <title>School Mantri Voter App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f8ff;
+      text-align: center;
+      padding: 30px;
+    }
+    .candidate {
+      border: 2px solid #333;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 15px auto;
+      width: 320px;
+      background: #fff;
+      box-shadow: 2px 2px 10px #aaa;
+      transition: background-color 0.3s;
+    }
+    .highlight {
+      background-color: #c8f7c5 !important;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    img {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 10px;
+    }
+    #result-btn {
+      margin-top: 30px;
+      background-color: green;
+      color: white;
+    }
+    #result-summary {
+      font-size: 18px;
+      margin-top: 20px;
+      color: darkblue;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📋 સ્કૂલ મંત્રી ચૂંટણી</h1>
+
+  <div class="candidate" id="c1">
+    <h2>📌 આશિત પટેલ</h2>
+    <img src="https://img.icons8.com/?size=100&id=21278&format=png" alt="Computer Symbol">
+    <br>
+    <button onclick="vote('c1')">Vote</button>
+    <p id="votes-c1" style="display:none;">Votes: 0</p>
+  </div>
+
+  <div class="candidate" id="c2">
+    <h2>📌 હાર્દિક દેસાણી</h2>
+    <img src="https://img.icons8.com/?size=100&id=23109&format=png" alt="TV Symbol">
+    <br>
+    <button onclick="vote('c2')">Vote</button>
+    <p id="votes-c2" style="display:none;">Votes: 0</p>
+  </div>
+
+  <button id="result-btn" onclick="showResults()">📊 Show Result</button>
+
+  <div id="result-summary"></div>
+
+  <audio id="beep-sound">
+    <source src="https://www.soundjay.com/button/sounds/beep-07.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="long-beep">
+    <source src="https://www.soundjay.com/button/sounds/beep-08b.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    let votes = { c1: 0, c2: 0 };
+
+    function playBeep(times, callback) {
+      const beep = document.getElementById('beep-sound');
+      let count = 0;
+      const interval = setInterval(() => {
+        beep.play();
+        count++;
+        if (count === times) {
+          clearInterval(interval);
+          if (callback) setTimeout(callback, 300);
+        }
+      }, 400);
+    }
+
+    function vote(candidate) {
+      votes[candidate]++;
+      highlightBox(candidate);
+      playBeep(3, () => {
+        document.getElementById('long-beep').play();
+      });
+    }
+
+    function highlightBox(candidate) {
+      const box = document.getElementById(candidate);
+      box.classList.add('highlight');
+      setTimeout(() => {
+        box.classList.remove('highlight');
+      }, 1500);
+    }
+
+    function showResults() {
+      document.getElementById('votes-c1').style.display = 'block';
+      document.getElementById('votes-c2').style.display = 'block';
+      document.getElementById('votes-c1').innerText = "Votes: " + votes['c1'];
+      document.getElementById('votes-c2').innerText = "Votes: " + votes['c2'];
+
+      let winner = '';
+      let loser = '';
+
+      if (votes['c1'] > votes['c2']) {
+        winner = 'આશિત પટેલ';
+        loser = 'હાર્દિક દેસાણી';
+      } else if (votes['c2'] > votes['c1']) {
+        winner = 'હાર્દિક દેસાણી';
+        loser = 'આશિત પટેલ';
+      } else {
+        document.getElementById('result-summary').innerText = "📢 બંને ઉમેદવારોને બરાબર વોટ મળ્યા છે. પરિણામ ટાઈ થયો!";
+        return;
+      }
+
+      document.getElementById('result-summary').innerText =
+        "🏆 વિજેતા: " + winner + " \n😞 હારનાર: " + loser;
+    }
+  </script>
+
+</body>
+</html>
